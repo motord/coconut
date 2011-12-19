@@ -16,7 +16,7 @@
 #
 from google.appengine.ext import webapp, db
 from google.appengine.ext.webapp import util
-from bottle import debug, Bottle, request, response, template, HeaderDict
+from bottle import debug, Bottle, request, response, template, HeaderDict, HTTPError
 from google.appengine.api import memcache
 from models import StaticContent
 import logging
@@ -68,13 +68,18 @@ def get_content(path):
         content=StaticContent.get_by_key_name(path)
         if content is None:
             if path=='index.html':
-                content=StaticContent(key_name=path, body=str(template('index.html')), content_type='text/html')
+                content=StaticContent(key_name=path, template=str(template('index.html', centipedes=[])), content_type='text/html')
                 content.put()
             else:
-                return
-        memcache.set(path, content, 43200)
+                return HTTPError(404, "Page not found")
+        memcache.set(path, content, 10800)
 
     return _output(content)
+
+@app.error(404)
+def error404(error):
+    return 'Nothing here, sorry'
+
 
 HTTP_DATE_FMT = "%a, %d %b %Y %H:%M:%S GMT"
 
@@ -103,7 +108,7 @@ def _output(content):
         key, value = header.split(':', 1)
         headers[key] = value.strip()
     if serve:
-        response.body = content.body
+        response.body = str(template(content.template, template_next=False))
         for key, value in headers.iteritems():
             response.set_header(key, value)
         response.content_type=content.content_type

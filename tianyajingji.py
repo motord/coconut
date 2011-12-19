@@ -12,7 +12,7 @@ from google.appengine.ext import deferred, db
 import urlparse
 from google.appengine.ext import deferred
 import mechanize
-import re
+import re, itertools
 from string import Template
 
 url_template=Template('http://www.tianya.cn/new/publicforum/articleslist.asp?pageno=${pageno}&stritem=develop')
@@ -35,7 +35,7 @@ def threads():
             yield thread
 
 def crawl():
-    hot=({'url':thread['url'], 'author':thread['author'], 'posts':thread['posts'], 'views':thread['views'], 'stanzas':[]} for thread in threads() if thread['posts']>threshold)
+    hot=({'url':thread['url'], 'author':thread['author'], 'posts':thread['posts'], 'views':thread['views'], 'stanzas':{}} for thread in threads() if thread['posts']>threshold)
     for thread in hot:
         deferred.defer(process, thread)
 
@@ -52,11 +52,19 @@ def process(thread):
 	    </table>
         *}
         """)
+        logging.info(thread['author'])
         pattern=template.substitute(author=thread['author'])
         logging.info(pattern)
         thread['stanzas'][url]=scrapemark.scrape(pattern, url=thread['url'])['stanzas']
         logging.info(thread['stanzas'][url])
+        content=StaticContent.get_by_key_name(thread['url'])
+        stanzas=list(itertools.chain.from_iterable(thread['stanzas'].values()))
+        if content is None:
+            content=StaticContent(key_name=thread['url'], template=str(template('centipede.html', template_next=True)), content_type='text/html')
+        else:
 
+            content.template=str(template(content.template, stanzas=stanzas, template_next=True))
+        content.put()
 
 def pages(thread):
     centipede=Centipede.get_by_key_name(thread['url'])

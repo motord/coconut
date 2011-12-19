@@ -7,10 +7,10 @@ import hashlib
 
 # Create your models here.
 class StaticContent(db.Model):
-    body = db.BlobProperty()
+    template = db.BlobProperty()
     content_type = db.StringProperty(required=True)
     status = db.IntegerProperty(required=True, default=200)
-    etag = aetycoon.DerivedProperty(lambda x: hashlib.sha1(x.body).hexdigest())
+    etag = aetycoon.DerivedProperty(lambda x: hashlib.sha1(x.template).hexdigest())
     headers = db.StringListProperty()
     created=db.DateTimeProperty(auto_now_add=True)
     modified=db.DateTimeProperty(auto_now=True)
