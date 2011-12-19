@@ -1,0 +1,4 @@
+cron:
+- description: crawl hot threads
+  url: /bots/crawl
+  schedule: every 3 hours

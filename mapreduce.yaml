@@ -1,0 +1,17 @@
+mapreduce:
+- name: Bottle juice
+  params:
+  - name: done_callback
+    value: /done
+  mapper:
+    handler: aisex.bottle_juice_map
+    input_reader: mapreduce.input_readers.DatastoreInputReader
+    params:
+    - name: entity_kind
+      default: models.Juice
+    - name: batch_size
+      default: 4
+    - name: processing_rate
+      default: 10
+    - name: shard_count
+      default: 4
