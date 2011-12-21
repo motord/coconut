@@ -5,6 +5,7 @@ import scrapemark
 
 url_template=Template('http://www.tianya.cn/new/publicforum/articleslist.asp?pageno=${pageno}&stritem=develop')
 threshold=1000
+encoding='gbk'
 
 def threads():
     tyjj=(url_template.substitute(pageno=str(i)) for i in range(2, 0, -1))
@@ -57,10 +58,12 @@ def process():
     </table>
     *}
     """)
-    pattern=template.substitute(author='出生于西部')
-    stanzas=scrapemark.scrape(pattern, url=url)['stanzas']
+    pattern=template.substitute(author=u'test')
+    pattern=scrapemark.compile(pattern)
+    stanzas=scrapemark.scrape(pattern, url=url, encoding=encoding)['stanzas']
     return stanzas
 
 
 if __name__ == '__main__':
     process()
+#    crawl()

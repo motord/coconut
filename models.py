@@ -16,7 +16,9 @@ class StaticContent(db.Model):
     modified=db.DateTimeProperty(auto_now=True)
 
 class Centipede(db.Model):
+    species=db.StringProperty()
     author=db.StringProperty()
+    title=db.StringProperty()
     posts=db.IntegerProperty()
     views=db.IntegerProperty()
     pedes=db.ListProperty(item_type=db.Link)

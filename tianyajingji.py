@@ -14,9 +14,11 @@ from google.appengine.ext import deferred
 import mechanize
 import re, itertools
 from string import Template
+from bottle import template
 
 url_template=Template('http://www.tianya.cn/new/publicforum/articleslist.asp?pageno=${pageno}&stritem=develop')
 threshold=1000
+encoding='gbk'
 
 def threads():
     tyjj=(url_template.substitute(pageno=str(i)) for i in range(10, 0, -1))
@@ -24,24 +26,29 @@ def threads():
         for thread in scrapemark.scrape("""
         {*
         <table name=''>
-        <tr><td><a href='{{ [threads].url }}'></a></td>
+        <tr><td><a href='{{ [threads].url }}'>{{ [threads].title}}</a></td>
         <td><a>{{ [threads].author }}</a></td>
         <td>{{ [threads].views|int }}</td>
 	    <td>{{ [threads].posts|int }}</td>
 	    <td></td>
 	    </table>
         *}
-        """, url=url)['threads']:
+        """, url=url, encoding=encoding)['threads']:
             yield thread
 
 def crawl():
-    hot=({'url':thread['url'], 'author':thread['author'], 'posts':thread['posts'], 'views':thread['views'], 'stanzas':{}} for thread in threads() if thread['posts']>threshold)
+    hot=({'url':thread['url'], 'author':thread['author'], 'title': thread['title'], 'posts':thread['posts'], 'views':thread['views'], 'stanzas':{}} for thread in threads() if thread['posts']>threshold)
     for thread in hot:
         deferred.defer(process, thread)
 
+def chain_from_iterable(iterables):
+    for it in iterables:
+        for element in it:
+            yield element
+
 def process(thread):
     for url in pages(thread):
-        template=Template("""
+        stanza_template=Template("""
         {*
         <table>
 		    <tr align="center">
@@ -53,12 +60,12 @@ def process(thread):
         *}
         """)
         logging.info(thread['author'])
-        pattern=template.substitute(author=thread['author'])
+        pattern=scrapemark.compile(stanza_template.substitute(author=thread['author']))
         logging.info(pattern)
-        thread['stanzas'][url]=scrapemark.scrape(pattern, url=thread['url'])['stanzas']
+        thread['stanzas'][url]=scrapemark.scrape(pattern, url=thread['url'], encoding=encoding)['stanzas']
         logging.info(thread['stanzas'][url])
         content=StaticContent.get_by_key_name(thread['url'])
-        stanzas=list(itertools.chain.from_iterable(thread['stanzas'].values()))
+        stanzas=list(chain_from_iterable(thread['stanzas'].values()))
         if content is None:
             content=StaticContent(key_name=thread['url'], template=str(template('centipede.html', template_next=True)), content_type='text/html')
         else:
@@ -81,7 +88,7 @@ def pages(thread):
         """, url=thread['url'])['pages'][:-1]:
         d[page]=1
     if centipede is None:
-        centipede=Centipede(key_name=thread['url'], author=thread['author'], posts=thread['posts'], views=thread['views'], pedes=[])
+        centipede=Centipede(key_name=thread['url'], species=u'天涯经济', author=thread['author'], title=thread['title'], posts=thread['posts'], views=thread['views'], pedes=[])
         urls=[db.Link(centipede.key().name())]
         urls.extend([db.Link(key) for key in d.keys()[:-2]])
     else:
