@@ -1,4 +1,5 @@
-__author__ = 'peter'
+# -*- coding: utf-8 -*-
+# __author__ = 'peter'
 
 from string import Template
 import scrapemark
@@ -47,7 +48,7 @@ def pages():
 
 def process():
     url='http://www.tianya.cn/publicforum/content/develop/1/905898.shtml'
-    template=Template("""
+    template=Template(u"""
     {*
     <table>
         <tr align="center">

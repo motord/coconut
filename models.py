@@ -7,7 +7,7 @@ import hashlib
 
 # Create your models here.
 class StaticContent(db.Model):
-    template = db.BlobProperty()
+    template = db.TextProperty()
     content_type = db.StringProperty(required=True)
     status = db.IntegerProperty(required=True, default=200)
     etag = aetycoon.DerivedProperty(lambda x: hashlib.sha1(x.template).hexdigest())
@@ -26,3 +26,7 @@ class Centipede(db.Model):
     created=db.DateTimeProperty(auto_now_add=True)
     modified=db.DateTimeProperty(auto_now=True)
 
+class Stanza(db.Model):
+    published=db.DateTimeProperty()
+    content=db.TextProperty()
+    created=db.DateTimeProperty(auto_now_add=True)

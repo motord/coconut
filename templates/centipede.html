@@ -1,10 +1,84 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-        "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-    <title></title>
-</head>
-<body>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>百足</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-</body>
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="media/css/bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+        %include coconut.css
+    </style>
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="media/images/favicon.png">
+    <link rel="apple-touch-icon" href="media/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="media/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="media/images/apple-touch-icon-114x114.png">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+    <script type="text/javascript" src="media/js/underscore-min.js"></script>
+    <script type="text/javascript" src="media/js/backbone-min.js"></script>
+    <script type="text/javascript">
+         %include coconut.js
+    </script>
+  </head>
+
+  <body>
+
+    <div class="topbar">
+      <div class="fill">
+        <div class="container">
+          <a class="brand" href="#">百足</a>
+            <ul class="nav">
+              <li class="active"><a href="#">Home</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+        <div id="Content">
+            <div class="Tabs HeadingTabs DiscussionTabs FirstPage">
+                <div class="SubTab">{{ centipede.title}}</div>
+            </div>
+            <ul class="DataList MessageList Discussion FirstPage">
+                %for stanza in stanzas:
+                <li id="Discussion_18326" class="Item Comment FirstComment">
+                    <div class="Comment">
+                        <div class="Meta">
+                          <span class="Author">{{ centipede.author }}</span>
+                             <span class="MItem DateCreated">
+                                    <time datetime="2011-12-20T01:46:25+00:00" title="December 20, 2011  1:46AM">
+                                        {{ stanza }}
+                                    </time>
+                             </span>
+                        </div>
+                        <div class="Message">
+                            {{ stanza }}
+                        </div>
+                    </div>
+                </li>
+                %end
+                %if template_next:
+                    %include stanza.html
+                %end
+            </ul>
+        </div>
+
+      <footer>
+        <p>&copy; Company 2011</p>
+      </footer>
+
+    </div> <!-- /container -->
+    %include analytics.html
+  </body>
 </html>

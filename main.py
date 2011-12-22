@@ -18,7 +18,7 @@ from google.appengine.ext import webapp, db
 from google.appengine.ext.webapp import util
 from bottle import debug, Bottle, request, response, template, HeaderDict, HTTPError
 from google.appengine.api import memcache
-from models import StaticContent
+from models import StaticContent, Centipede, Stanza
 import logging
 import bottle
 import datetime
@@ -68,7 +68,8 @@ def get_content(path):
         content=StaticContent.get_by_key_name(path)
         if content is None:
             if path=='index.html':
-                content=StaticContent(key_name=path, template=str(template('index.html', centipedes=[])), content_type='text/html')
+                centipedes=Centipede.gql("ORDER BY modified DESC LIMIT 25")
+                content=StaticContent(key_name=path, template=str(template('index.html', centipedes=centipedes)), content_type='text/html')
                 content.put()
             else:
                 return HTTPError(404, "Page not found")
