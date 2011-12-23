@@ -1,0 +1,4 @@
+backends:
+- name: crawler
+  instances : 1
+  start: bots.py

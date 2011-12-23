@@ -12,19 +12,19 @@
     <![endif]-->
 
     <!-- Le styles -->
-    <link href="media/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/media/css/bootstrap.min.css" rel="stylesheet">
     <style type="text/css">
         %include coconut.css
     </style>
 
     <!-- Le fav and touch icons -->
-    <link rel="shortcut icon" href="media/images/favicon.png">
-    <link rel="apple-touch-icon" href="media/images/apple-touch-icon.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="media/images/apple-touch-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="media/images/apple-touch-icon-114x114.png">
+    <link rel="shortcut icon" href="/media/images/favicon.png">
+    <link rel="apple-touch-icon" href="/media/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/media/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/media/images/apple-touch-icon-114x114.png">
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-    <script type="text/javascript" src="media/js/underscore-min.js"></script>
-    <script type="text/javascript" src="media/js/backbone-min.js"></script>
+    <script type="text/javascript" src="/media/js/underscore-min.js"></script>
+    <script type="text/javascript" src="/media/js/backbone-min.js"></script>
     <script type="text/javascript">
          %include coconut.js
     </script>
@@ -69,7 +69,7 @@
                 </li>
                 %end
                 %if template_next:
-                    %include stanza.html
+                    %include stanza.html open='{{', close='}}'
                 %end
             </ul>
         </div>

@@ -19,11 +19,11 @@ import bottle
 
 url_template=Template('http://www.tianya.cn/new/publicforum/articleslist.asp?pageno=${pageno}&stritem=develop')
 threshold=1000
-encoding='gbk'
+encoding='gb18030'
 bottle.TEMPLATE_PATH.insert(0, './templates/')
 
 def threads():
-    tyjj=(url_template.substitute(pageno=str(i)) for i in range(100, 0, -1))
+    tyjj=(url_template.substitute(pageno=str(i)) for i in range(10, 0, -1))
     for url in tyjj:
         for thread in scrapemark.scrape("""
         {*
@@ -43,19 +43,14 @@ def crawl():
     for thread in hot:
         deferred.defer(process, thread)
 
-def chain_from_iterable(iterables):
-    for it in iterables:
-        for element in it:
-            yield element
-
 def process(thread):
     for url in pages(thread):
-        stanza_template=Template("""
+        stanza_template=Template(u"""
         {*
         <table>
 		    <tr align="center">
                 <td align="center">
-                    <a>${author}</a>{{ [stanzas].datetime }}
+                    <a>${author}</a> &nbsp;发表日期：{{ [stanzas].datetime }}
 		        </td>
 		</tr>
 	    </table>
@@ -66,6 +61,11 @@ def process(thread):
         logging.info(pattern)
         thread['stanzas'][url]=scrapemark.scrape(pattern, url=url, encoding=encoding)['stanzas']
         logging.info(thread['stanzas'][url])
+
+def new_stanzas(thread, centipede):
+    for url, stanzas in thread['stanzas'].items():
+        for stanza in stanzas:
+            yield Stanza(parent=centipede, page_url=url, content=stanza['datetime'])
 
 def pages(thread):
     centipede=Centipede.get_by_key_name(thread['url'])
@@ -82,7 +82,7 @@ def pages(thread):
         """, url=thread['url'])['pages'][:-1]:
         d[page]=1
     if centipede is None:
-        centipede=Centipede(key_name=thread['url'], species=u'天涯经济', author=thread['author'], title=thread['title'], posts=thread['posts'], views=thread['views'], pedes=[])
+        centipede=Centipede(key_name=thread['url'], species=db.Category(u'天涯经济'), author=thread['author'], title=thread['title'], posts=thread['posts'], views=thread['views'], pedes=[])
         urls=[db.Link(thread['url'])]
         urls.extend([db.Link(key) for key in d.keys()[:-2]])
     else:
@@ -97,10 +97,11 @@ def pages(thread):
     centipede_url_components=urlparse.urlparse(thread['url'])
     centipede_url_netloc_path=centipede_url_components.netloc + centipede_url_components.path
     content=StaticContent.get_by_key_name(centipede_url_netloc_path)
-    new_stanzas=[Stanza(parent=centipede, content=stanza['datetime']) for stanza in list(chain_from_iterable(thread['stanzas'].values()))]
+    stanzas=[stanza for stanza in new_stanzas(thread, centipede)]
     if content is None:
-        content=StaticContent(key_name=centipede_url_netloc_path, template=str(template('centipede.html', centipede=centipede, stanzas=new_stanzas, template_next=True, open='{{', close='}}')), content_type='text/html')
+        content=StaticContent(key_name=centipede_url_netloc_path, template=db.Text(template('centipede.html', centipede=centipede, stanzas=stanzas, template_next=True)), content_type='text/html')
     else:
-        content.template=str(template(content.template, centipede=centipede, stanzas=new_stanzas, template_next=True, open='{{', close='}}'))
-    db.put(new_stanzas)
+        content.template=db.Text(template(content.template, centipede=centipede, stanzas=stanzas, template_next=True))
+    db.put(stanzas)
     content.put()
+    memcache.delete(content.key().name())

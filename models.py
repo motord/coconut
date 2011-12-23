@@ -10,13 +10,13 @@ class StaticContent(db.Model):
     template = db.TextProperty()
     content_type = db.StringProperty(required=True)
     status = db.IntegerProperty(required=True, default=200)
-    etag = aetycoon.DerivedProperty(lambda x: hashlib.sha1(x.template).hexdigest())
+    etag = aetycoon.DerivedProperty(lambda x: hashlib.sha1(x.template.encode('utf8')).hexdigest())
     headers = db.StringListProperty()
     created=db.DateTimeProperty(auto_now_add=True)
     modified=db.DateTimeProperty(auto_now=True)
 
 class Centipede(db.Model):
-    species=db.StringProperty()
+    species=db.CategoryProperty()
     author=db.StringProperty()
     title=db.StringProperty()
     posts=db.IntegerProperty()
@@ -27,6 +27,7 @@ class Centipede(db.Model):
     modified=db.DateTimeProperty(auto_now=True)
 
 class Stanza(db.Model):
+    page_url=db.LinkProperty()
     published=db.DateTimeProperty()
     content=db.TextProperty()
     created=db.DateTimeProperty(auto_now_add=True)

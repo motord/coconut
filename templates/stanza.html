@@ -1,4 +1,4 @@
-%%for stanza in centipede.stanzas:
+%%for stanza in stanzas:
 <li id="Discussion_18326" class="Item Comment FirstComment">
     <div class="Comment">
         <div class="Meta">
@@ -14,4 +14,7 @@
         </div>
     </div>
 </li>
+%%end
+%%if template_next:
+    %%include stanza.html open='{{', close='}}'
 %%end
