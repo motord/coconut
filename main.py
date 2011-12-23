@@ -112,7 +112,7 @@ def _output(content):
         key, value = header.split(':', 1)
         headers[key] = value.strip()
     if serve:
-        response.body = str(content.template.encode('utf8'))
+        response.body = content.template.encode('utf8')
         for key, value in headers.iteritems():
             response.set_header(key, value)
         response.content_type=content.content_type
