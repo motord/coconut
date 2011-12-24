@@ -35,22 +35,24 @@
     <div class="topbar">
       <div class="fill">
         <div class="container">
-          <a class="brand" href="#">百足</a>
+          <a class="brand" href="/">百足</a>
             <ul class="nav">
-              <li class="active"><a href="#">Home</a></li>
-              <li><a href="#about">About</a></li>
-              <li><a href="#contact">Contact</a></li>
+              <li class="active"><a href="/">Home</a></li>
+              <li><a href="/#about">About</a></li>
+              <li><a href="/#contact">Contact</a></li>
             </ul>
         </div>
       </div>
     </div>
 
     <div class="container">
+        <!-- Main hero unit for a primary marketing message or call to action -->
+        <div class="hero-unit">
+          <h1>{{ centipede.title}}</h1>
+          <p>Vestibulum id ligula porta felis euismod semper. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.</p>
+        </div>
         <div id="Content">
-            <div class="Tabs HeadingTabs DiscussionTabs FirstPage">
-                <div class="SubTab">{{ centipede.title}}</div>
-            </div>
-            <ul class="DataList MessageList Discussion FirstPage">
+            <ul class="DataList MessageList Discussion">
                 %for stanza in stanzas:
                 <li id="Discussion_18326" class="Item Comment FirstComment">
                     <div class="Comment">

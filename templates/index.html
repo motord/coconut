@@ -45,12 +45,13 @@
       </div>
     </div>
 
-    <div class="container">
+    <div id="Body" class="container">
 
         <div id="Content">
             <ul class="DataList Discussions">
+                %import urlparse
                 %for centipede in centipedes:
-                <li class="Item Announcement">
+                <li class="Item">
                     <div class="StatBoxes">
                         <span class="StatBox ViewsBox">
                             <div class="Stats-Label">Views</div>
@@ -64,14 +65,13 @@
                         </span>
                     </div>
                     <div class="ItemContent Discussion">
-                        <a class="Title" href="{{ centipede.key().name() }}">
+                        %url_components= urlparse.urlparse(centipede.key().name())
+                        <a class="Title" href="{{ url_components.netloc + url_components.path }}">
                             {{ centipede.title }}
                         </a>
                         <div class="Meta">
-                            <span class="Tag Tag Announcement">Announcement</span>
-                            <span class="MItem CommentCount">1 comment</span>
-                            <span class="MItem LastCommentBy">Started by {{ centipede.author }}</span>
-                            <span class="MItem LastCommentDate">
+                            <span class="label MItem LastCommentBy">Started by {{ centipede.author }}</span>
+                            <span class="label success MItem LastCommentDate">
                                 <time datetime="2011-12-21T16:41:14+00:00"
                                       title="December 21, 2011  4:41PM">{{ centipede.modified }}
                                 </time>
