@@ -22,7 +22,7 @@ url_template=Template('http://www.tianya.cn/new/publicforum/articleslist.asp?pag
 threshold=1000
 encoding='gb18030'
 bottle.TEMPLATE_PATH.insert(0, './templates/')
-host_url='http://baizu.samdeha.com/'
+host_url='http://baizu.samdeha.com'
 
 def threads():
     tyjj=(url_template.substitute(pageno=str(i)) for i in range(10, 0, -1))
