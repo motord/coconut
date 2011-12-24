@@ -89,7 +89,7 @@ def pages(thread):
         urls=[db.Link(thread['url'])]
         urls.extend([db.Link(key) for key in d.keys()[:-2]])
         qr_key=centipede_url_components.netloc + '.'.join([centipede_url_components.path.split('.')[0],'png'])
-        img=urlfetch.fetch('http://chart.apis.google.com/chart?cht=qr&chs=200x200&chl='+urllib2.quote(host_url+qr_key))
+        img=urlfetch.fetch('http://chart.apis.google.com/chart?cht=qr&chs=200x200&chl='+urllib2.quote(host_url+centipede_url_components.path))
         qr_content=StaticContent(key_name=qr_key, body=img.content, content_type='image/png')
         qr_content.put()
     else:
