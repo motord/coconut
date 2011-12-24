@@ -68,13 +68,15 @@ def get_content(path):
         content=StaticContent.get_by_key_name(path)
         if path=='index.html':
             centipedes=Centipede.gql("ORDER BY modified DESC LIMIT 25")
-            content=StaticContent(key_name=path, template=db.Text(template('index.html', centipedes=centipedes)), content_type='text/html')
+            content=StaticContent(key_name=path, body=db.Text(template('index.html', centipedes=centipedes)).encode('utf8'), content_type='text/html')
             content.put()
         else:
             if content is None:
                 return HTTPError(404, "Page not found")
             else:
-                content.template=db.Text(template(content.template, template_next=False, stanzas=[]))
+                if content.template:
+                    content.template=db.Text(template(content.template, template_next=False, stanzas=[]))
+                    content.body= content.template.encode('utf8')
 
         memcache.set(path, content, 10800)
 
@@ -112,7 +114,7 @@ def _output(content):
         key, value = header.split(':', 1)
         headers[key] = value.strip()
     if serve:
-        response.body = content.template.encode('utf8')
+        response.body = content.body
         for key, value in headers.iteritems():
             response.set_header(key, value)
         response.content_type=content.content_type

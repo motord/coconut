@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>百足</title>
+    <title>百足 - {{ centipede.title }}</title>
     <meta name="description" content="">
     <meta name="author" content="">
 
@@ -48,22 +48,38 @@
     <div class="container">
         <!-- Main hero unit for a primary marketing message or call to action -->
         <div class="hero-unit">
-          <h1>{{ centipede.title}}</h1>
-          <p>Vestibulum id ligula porta felis euismod semper. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.</p>
+          <h2>{{ centipede.title}}</h2>
+          <div class="QRBox">
+              %import urlparse
+              %url_components= urlparse.urlparse(centipede.key().name())
+              <img src="/{{ url_components.netloc + '.'.join([url_components.path.split('.')[0],'png']) }}">
+          </div>
+          <div class="StatBoxes">
+            <span class="StatBox ViewsBox">
+                <div class="Stats-Label">Views</div>
+                <div class="Stats-Number">{{ centipede.views }}
+                </div>
+            </span>
+            <span class="StatBox CommentsBox">
+                <div class="Stats-Label">Comments</div>
+                <div class="Stats-Number">{{ centipede.comments }}
+                </div>
+            </span>
+            <div class="Meta">
+                <span class="Author">{{ centipede.author }}</span>
+                   <span class="MItem DateCreated">
+                          <time datetime="2011-12-20T01:46:25+00:00" title="December 20, 2011  1:46AM">
+                              {{ centipede.created }}
+                          </time>
+                   </span>
+            </div>
+          </div>
         </div>
         <div id="Content">
             <ul class="DataList MessageList Discussion">
                 %for stanza in stanzas:
                 <li id="Discussion_18326" class="Item Comment FirstComment">
                     <div class="Comment">
-                        <div class="Meta">
-                          <span class="Author">{{ centipede.author }}</span>
-                             <span class="MItem DateCreated">
-                                    <time datetime="2011-12-20T01:46:25+00:00" title="December 20, 2011  1:46AM">
-                                        {{ stanza }}
-                                    </time>
-                             </span>
-                        </div>
                         <div class="Message">
                             {{ stanza }}
                         </div>
