@@ -22,7 +22,7 @@ url_template=Template('http://www.tianya.cn/new/publicforum/articleslist.asp?pag
 threshold=1000
 encoding='gb18030'
 bottle.TEMPLATE_PATH.insert(0, './templates/')
-host_url='http://baizu.samdeha.com'
+host_url='http://baizu.samdeha.com/'
 
 def threads():
     tyjj=(url_template.substitute(pageno=str(i)) for i in range(10, 0, -1))
@@ -75,6 +75,7 @@ def pages(thread):
     urls=[]
     logging.info(thread['url'])
     centipede_url_components=urlparse.urlparse(thread['url'])
+    centipede_url_netloc_path=centipede_url_components.netloc + centipede_url_components.path
     for page in scrapemark.scrape("""
         <div class="pages" id="pageDivTop">
         {*
@@ -89,7 +90,7 @@ def pages(thread):
         urls=[db.Link(thread['url'])]
         urls.extend([db.Link(key) for key in d.keys()[:-2]])
         qr_key=centipede_url_components.netloc + '.'.join([centipede_url_components.path.split('.')[0],'png'])
-        img=urlfetch.fetch('http://chart.apis.google.com/chart?cht=qr&chs=200x200&chl='+urllib2.quote(host_url+centipede_url_components.path))
+        img=urlfetch.fetch('http://chart.apis.google.com/chart?cht=qr&chs=200x200&chl='+urllib2.quote(host_url+centipede_url_netloc_path))
         qr_content=StaticContent(key_name=qr_key, body=img.content, content_type='image/png')
         qr_content.put()
     else:
@@ -101,7 +102,6 @@ def pages(thread):
     for url in urls:
         yield url
     centipede.put()
-    centipede_url_netloc_path=centipede_url_components.netloc + centipede_url_components.path
     content=StaticContent.get_by_key_name(centipede_url_netloc_path)
     stanzas=[stanza for stanza in new_stanzas(thread, centipede)]
     if content is None:
