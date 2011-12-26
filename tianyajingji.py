@@ -17,12 +17,14 @@ from string import Template
 from bottle import template
 import bottle
 import urllib2
+import datetime
 
 url_template=Template('http://www.tianya.cn/new/publicforum/articleslist.asp?pageno=${pageno}&stritem=develop')
 threshold=1000
 encoding='gb18030'
 bottle.TEMPLATE_PATH.insert(0, './templates/')
 host_url='http://baizu.samdeha.com/'
+HTTP_DATE_FMT = '%Y-%m-%d %H:%M:%S'
 
 def threads():
     tyjj=(url_template.substitute(pageno=str(i)) for i in range(10, 0, -1))
@@ -49,13 +51,30 @@ def process(thread):
     for url in pages(thread):
         stanza_template=Template(u"""
         {*
-        <table>
-		    <tr align="center">
-                <td align="center">
+        <table id="firstAuthor">
+		    <tr>
+                <td>
                     <a>${author}</a> &nbsp;发表日期：{{ [stanzas].datetime }}
 		        </td>
-		</tr>
+		    </tr>
 	    </table>
+	    <div id="pContentDiv">
+	        <div class="post">
+	        {{ [stanzas].content }}
+	        </div>
+	    </div>
+        *}
+        {*
+        <table>
+		    <tr>
+                <td>
+                    <a>${author}</a>　回复日期：{{ [stanzas].datetime }}
+		        </td>
+		    </tr>
+	    </table>
+        <div class="post">
+        {{ [stanzas].content }}
+        </div>
         *}
         """)
         logging.info(thread['author'])
@@ -67,7 +86,7 @@ def process(thread):
 def new_stanzas(thread, centipede):
     for url, stanzas in thread['stanzas'].items():
         for stanza in stanzas:
-            yield Stanza(parent=centipede, page_url=url, content=stanza['datetime'])
+            yield Stanza(parent=centipede, page_url=url, content=stanza['content'], published=datetime.datetime.strptime(stanza['datetime'], HTTP_DATE_FMT))
 
 def pages(thread):
     centipede=Centipede.get_by_key_name(thread['url'])

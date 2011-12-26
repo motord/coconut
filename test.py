@@ -7,6 +7,7 @@ import scrapemark
 url_template=Template('http://www.tianya.cn/new/publicforum/articleslist.asp?pageno=${pageno}&stritem=develop')
 threshold=1000
 encoding='gbk'
+HTTP_DATE_FMT = '%Y-%m-%d %H:%M:%S'
 
 def threads():
     tyjj=(url_template.substitute(pageno=str(i)) for i in range(2, 0, -1))
@@ -49,17 +50,34 @@ def pages():
 def process():
     url='http://www.tianya.cn/publicforum/content/develop/1/905898.shtml'
     template=Template(u"""
-    {*
-    <table>
-        <tr align="center">
-            <td align="center">
-                <a>${author}</a>{{ [stanzas].datetime }}
-            </td>
-    </tr>
-    </table>
-    *}
+        {*
+        <table id="firstAuthor">
+		    <tr>
+                <td>
+                    <a>${author}</a> &nbsp;发表日期：{{ [stanzas].datetime }}
+		        </td>
+		    </tr>
+	    </table>
+	    <div id="pContentDiv">
+	        <div class="post">
+	        {{ [stanzas].content }}
+	        </div>
+	    </div>
+        *}
+        {*
+        <table>
+		    <tr>
+                <td>
+                    <a>${author}</a>　回复日期：{{ [stanzas].datetime }}
+		        </td>
+		    </tr>
+	    </table>
+        <div class="post">
+        {{ [stanzas].content }}
+        </div>
+        *}
     """)
-    pattern=template.substitute(author=u'test')
+    pattern=template.substitute(author=u'flp713')
     pattern=scrapemark.compile(pattern)
     stanzas=scrapemark.scrape(pattern, url=url, encoding=encoding)['stanzas']
     return stanzas
