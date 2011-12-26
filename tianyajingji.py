@@ -60,7 +60,7 @@ def process(thread):
 	    </table>
 	    <div id="pContentDiv">
 	        <div class="post">
-	        {{ [stanzas].content }}
+	        {{ [stanzas].content|html }}
 	        </div>
 	    </div>
         *}
@@ -73,7 +73,7 @@ def process(thread):
 		    </tr>
 	    </table>
         <div class="post">
-        {{ [stanzas].content }}
+        {{ [stanzas].content|html }}
         </div>
         *}
         """)
