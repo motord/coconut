@@ -86,7 +86,7 @@ def process(thread):
 def new_stanzas(thread, centipede):
     for url, stanzas in thread['stanzas'].items():
         for stanza in stanzas:
-            yield Stanza(parent=centipede, page_url=url, content=db.Text(stanza['content']), published=datetime.datetime.strptime(stanza['datetime'], HTTP_DATE_FMT))
+            yield Stanza(parent=centipede, page_url=url, content=db.Text(stanza['content']), published=datetime.datetime.strptime(re.sub(u'\u3000', ' ', stanza['datetime']), HTTP_DATE_FMT))
 
 def pages(thread):
     centipede=Centipede.get_by_key_name(thread['url'])
