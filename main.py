@@ -62,7 +62,7 @@ def scroll(page):
 def get_content(path):
     if path=='':
         path='index.html'
-    memcache.delete(path)
+#    memcache.delete(path)
     content=memcache.get(path)
     if content is None:
         content=StaticContent.get_by_key_name(path)
@@ -78,7 +78,7 @@ def get_content(path):
                     content.template=db.Text(template(content.template, template_next=False, stanzas=[]))
                     content.body= content.template.encode('utf8')
 
-        memcache.set(path, content, 10800)
+#        memcache.set(path, content, 10800)
 
     return _output(content)
 

@@ -127,6 +127,6 @@ def pages(thread):
         content=StaticContent(key_name=centipede_url_netloc_path, template=db.Text(template('centipede.html', centipede=centipede, stanzas=stanzas, template_next=True)), content_type='text/html')
     else:
         content.template=db.Text(template(content.template, centipede=centipede, stanzas=stanzas, template_next=True))
-    db.put(stanzas)
+#    db.put(stanzas)
     content.put()
     memcache.delete(content.key().name())

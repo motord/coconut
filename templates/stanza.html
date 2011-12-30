@@ -3,17 +3,17 @@
     <div class="Comment">
         <div class="Meta">
              <span class="MItem DateCreated">
-                    <time datetime="{{open}} stanza.published {{close}}" title="{{open}} stanza.published {{close}}">
-                        {{open}} stanza.published {{close}}
+                    <time datetime="{{open_dc}} stanza.published {{close_dc}}" title="{{open_dc}} stanza.published {{close_dc}}">
+                        {{open_dc}} stanza.published {{close_dc}}
                     </time>
              </span>
         </div>
         <div class="Message">
-            {{open}}!stanza.content{{close}}
+            {{open_dc}}!stanza.content{{close_dc}}
         </div>
     </div>
 </li>
 %%end
 %%if template_next:
-    %%include stanza.html open='{{', close='}}'
+    %%include stanza.html open_dc='{{open_dc}}', close_dc='{{close_dc}}'
 %%end
